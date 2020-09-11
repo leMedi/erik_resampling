@@ -1,0 +1,36 @@
+N=36
+R = xold[last] - xold[0]    //last original x value - first //
+S = R/36
+
+COUNTER i = 0
+COUNTER j = 0 
+for i < 36 :
+	NEWX[j+1] = xold[i] + S //this resamples x values to halfway //
+
+	new_x = NEWX[j+1]
+	xold[i] = x
+
+	x[i] <= XNEW[j] <= xold[i+1]
+		YNEW[j] = y   +   ( yold[i+1] - yold[i] )( XNEW[j] - xold[i]) / ( xold[i+1] xold[i])
+
+	//to perform linear interpolation, we find the closest 2 xold & yold coords to NEWX[i] & NEWY[i]. Then we apply linear interp formula to get NEWY[i]://
+
+	for xold[i] <= XNEW[j] <= xold[i+1]
+		YNEW[j] = yold[i]   +   ( yold[i+1] - yold[i] )( XNEW[j] - xold[i]) / ( xold[i+1] xold[i])
+	i++ 
+	j++
+
+
+for xold[i] <= XNEW[j] <= xold[i+1]
+	YNEW[j] = yold[i]   +   ( yold[i+1] - yold[i] )( XNEW[j] - xold[i]) / (xold[i+1] xold[i])
+
+for 36 <= i <=54:
+	S=R/72	 //double sample rate now//
+	NEWX[j+1] = xold[i] + S //this resamples x values to end //
+
+	for xold[i] <= XNEW[j] <= xold[i+1]
+		YNEW[j] = yold[i]   +   ( yold[i+1] - yold[i] )( XNEW[j] - xold[i]) / ( xold[i+1] xold[i])
+	i++ 
+	j++
+
+//now resampled all points: 0 to 35 with S=36, then 36 to 54 with S=72. Next step is simply to write XNEW & YNEW to a new data file // 
