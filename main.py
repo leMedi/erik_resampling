@@ -1,4 +1,5 @@
-import pandas as pd
+import argparse
+import os
 import codecs
 from openpyxl import Workbook
 
@@ -9,7 +10,7 @@ def extract_data_from_file(file_path):
   data_start_line = 'ZONE: DATA'
   collect_data = False
 
-  with codecs.open('b-gt-calr14______c01_t2101carp0l-30-01-2008-12-05-36.____', encoding='utf-8') as f:
+  with codecs.open(file_path, encoding='utf-8') as f:
     for line in f:
       line = line.strip()
       if collect_data:
@@ -42,7 +43,7 @@ def save_excel(filename, sheetname, x, obo_prev, fgm_output_power_prev):
   wb = Workbook()
   # grab the active worksheet
   ws = wb.active
-  ws.title = 'resampled data'
+  ws.title = sheetname
 
   # Add column names
   ws.append(['x', 'obo_prev', 'fgm_output_power_prev'])
@@ -50,7 +51,7 @@ def save_excel(filename, sheetname, x, obo_prev, fgm_output_power_prev):
   for i in range(0, len(x)):
     ws.append([x[i], obo_prev[i], fgm_output_power_prev[i]])
 
-  wb.save("sample.xlsx")
+  wb.save(filename)
 
 
 ####################
@@ -102,8 +103,14 @@ def interpolate_y_axis(x_vec, new_x_vec, y_vec):
 
 ####################
 ##### General code
+def get_files_in_directory(directory_path):
+  f = []
+  for (dirpath, dirnames, filenames) in os.walk(directory_path):
+      f.extend(filenames)
+      break 
+  return f
 
-def resample_file(file_path):
+def resample_file(file_path, output_file_path):
   data_lines = extract_data_from_file(file_path)
   x_axis, y1_axis, y2_axis = data_lines_to_vectors(data_lines)
 
@@ -121,13 +128,32 @@ def resample_file(file_path):
   new_y2_axis = interpolate_y_axis(x_axis, new_x_axis, y2_axis)
   print('new_y2', new_y2_axis)
 
-  save_excel(file_path, 'output', new_x_axis, new_y1_axis, new_y2_axis)
+  save_excel(output_file_path, 'resampled data', new_x_axis, new_y1_axis, new_y2_axis)
 
 
-read_fiels 
+def resample_directory(input_directory, output_directory):
+  files = get_files_in_directory(input_directory)
 
-file_path = 'b-gt-calr14______c01_t2101carp0l-30-01-2008-12-05-36.____'
-resample_file(file_path)
+  if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+  for f in files:
+    file_path = os.path.join(input_directory, f)
+    output_file_path = os.path.join(output_directory, f + '.xlsx')
+    resample_file(file_path, output_file_path)
+
+
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--input-directory', dest='input_directory', required=True, help="input directory")
+parser.add_argument('-o', '--output-directory', dest='output_directory', required=True, help="output directory")
+args = parser.parse_args()
+
+print('input_directory', args.input_directory)
+print('output_directory', args.output_directory)
+
+resample_directory(args.input_directory, args.output_directory)
 
 
 
