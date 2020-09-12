@@ -83,7 +83,7 @@ def re_sample_vector(vector, sample_rate):
     new_val = new_vector[i] + S
     new_vector.append(new_val)
 
-  new_vector_rounded = [round(num, 2) for num in new_vector]
+  new_vector_rounded = [num for num in new_vector]
 
   return new_vector_rounded
 
@@ -99,7 +99,7 @@ def find_closest_range(vector, x):
 def interpolate_y_at_x(x_vec, y_vec, val):
   min_index, max_index = find_closest_range(x_vec, val)
   new_y = y_vec[min_index] + (y_vec[max_index] - y_vec[min_index])*(val - x_vec[min_index])/(x_vec[max_index] - x_vec[min_index])
-  return round(new_y, 2)
+  return new_y
 
 def interpolate_y_axis(x_vec, new_x_vec, y_vec):
   new_y_vec = []
@@ -107,7 +107,7 @@ def interpolate_y_axis(x_vec, new_x_vec, y_vec):
   for i in range(1, len(new_x_vec)-1):
     val = new_x_vec[i]
     new_y = interpolate_y_at_x(x_vec, y_vec, val)
-    new_y_vec.append(round(new_y, 2))
+    new_y_vec.append(new_y)
   new_y_vec.append(y_vec[-1])
   return new_y_vec
 
@@ -141,9 +141,18 @@ def resample_file(satellite_name, file_path, output_file_path):
   new_y2_axis = interpolate_y_axis(x_axis, new_x_axis, y2_axis)
   # print('new_y2', new_y2_axis)
 
+
   new_x_axis_offseted = new_x_axis[1:]
   new_y1_axis_offseted = new_y1_axis[1:]
   new_y2_axis_offseted = new_y2_axis[1:]
+
+
+  y2_axis_avg = []
+
+  for i in range(0, len(new_y2_axis_offseted)):
+    avg = (new_y2_axis[i] + new_y2_axis_offseted[i])/2
+    y2_axis_avg.append(avg)
+
 
   x_col = ['x']
   x_col.extend(new_x_axis)
