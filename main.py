@@ -194,7 +194,7 @@ def resample_directory(input_directory, output_directory):
   if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
-  satellite_name = input_directory.split('/')[-1]
+  satellite_name = os.path.basename(os.path.dirname(input_directory))
 
   for f in files:
     file_path = os.path.join(input_directory, f)
