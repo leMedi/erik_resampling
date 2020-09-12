@@ -37,9 +37,14 @@ def data_lines_to_vectors(data_lines):
 
   return x, y1, y2
 
-def get_txp_from_file_name(file_name):
-  x = file_name.split('______')[-1]
-  return x.split('_')[0]
+def get_info_from_file_name(file_name):
+  x = file_name.split('______')[-1].split('_')
+  txp = x[0]
+  twt = x[1][1:5]
+
+  return txp, twt
+
+
 
 # def save_excel(filename, sheetname, satellite_name, x, obo_prev, fgm_output_power_prev):
 def save_excel(filename, sheetname, data):
@@ -120,7 +125,7 @@ def resample_file(satellite_name, file_path, output_file_path):
   data_lines = extract_data_from_file(file_path)
   x_axis, y1_axis, y2_axis = data_lines_to_vectors(data_lines)
 
-  txp = get_txp_from_file_name(file_path)
+  txp, twt = get_info_from_file_name(file_path)
 
   # print('x', x_axis)
 
@@ -164,6 +169,9 @@ def resample_file(satellite_name, file_path, output_file_path):
   txp_col = ['txp']
   txp_col.extend([txp] * len(new_x_axis))
 
+  twt_col = ['TWT']
+  twt_col.extend([twt] * len(new_x_axis))
+
   data = [
     x_col,
     y1_col,
@@ -172,7 +180,8 @@ def resample_file(satellite_name, file_path, output_file_path):
     txp_col,
     x_offseted_col,
     y1_offseted_col,
-    y2_offseted_col
+    y2_offseted_col,
+    twt_col
   ]
 
   # save_excel(output_file_path, 'resampled data', satellite_name, new_x_axis, new_y1_axis, new_y2_axis, new_x_axis_offseted, new_y1_axis_offseted, new_y2_axis_offseted)
