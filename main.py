@@ -163,6 +163,9 @@ def resample_file(satellite_name, file_path, output_file_path):
   y2_offseted_col = ['fgm_output_power_next']
   y2_offseted_col.extend(new_y2_axis_offseted)
 
+  y2_axis_avg_col = ['fgm_output_power_final']
+  y2_axis_avg_col.extend(y2_axis_avg)
+
   satellite_col = ['Satellite']
   satellite_col.extend([satellite_name] * len(new_x_axis))
 
@@ -181,6 +184,7 @@ def resample_file(satellite_name, file_path, output_file_path):
     x_offseted_col,
     y1_offseted_col,
     y2_offseted_col,
+    y2_axis_avg_col,
     twt_col
   ]
 
