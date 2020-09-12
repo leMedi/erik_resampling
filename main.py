@@ -114,19 +114,19 @@ def resample_file(file_path, output_file_path):
   data_lines = extract_data_from_file(file_path)
   x_axis, y1_axis, y2_axis = data_lines_to_vectors(data_lines)
 
-  print('x', x_axis)
+  # print('x', x_axis)
 
   x_36 = re_sample_vector(x_axis, 36)
   x_72 = re_sample_vector(x_axis, 72)
 
   new_x_axis = x_36[0:18] + x_72[35:]
-  print('new_x', new_x_axis)
+  # print('new_x', new_x_axis)
 
   new_y1_axis = interpolate_y_axis(x_axis, new_x_axis, y1_axis)
-  print('new_y1', new_y1_axis)
+  # print('new_y1', new_y1_axis)
 
   new_y2_axis = interpolate_y_axis(x_axis, new_x_axis, y2_axis)
-  print('new_y2', new_y2_axis)
+  # print('new_y2', new_y2_axis)
 
   save_excel(output_file_path, 'resampled data', new_x_axis, new_y1_axis, new_y2_axis)
 
@@ -141,6 +141,8 @@ def resample_directory(input_directory, output_directory):
     file_path = os.path.join(input_directory, f)
     output_file_path = os.path.join(output_directory, f + '.xlsx')
     resample_file(file_path, output_file_path)
+    print(output_file_path)
+
 
 
 
