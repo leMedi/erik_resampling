@@ -2,6 +2,7 @@ import argparse
 import os
 import codecs
 from openpyxl import Workbook
+import re
 
 ####################
 ##### Files Management code
@@ -38,12 +39,21 @@ def data_lines_to_vectors(data_lines):
   return x, y1, y2
 
 def get_info_from_file_name(file_name):
-  x = file_name.split('______')[-1].split('_')
-  txp = x[0]
-  twt = x[1][1:5]
+  try:
+    print(file_name)
+    # x = file_name.split('______')[-1].split('_')
+    txp = re.findall(r"([a-zA-Z]\d\d)[_XRY]", file_name)[-1]
+    print("txp", txp)
 
-  return txp, twt
-
+    result = re.findall(r"_[tT](\d*)[\w]", file_name)
+    twt = 0
+    if len(result) > 0:
+      twt = result[-1]
+    print("twt", twt)
+    return txp, twt
+  except Exception:
+    print("@@@@@@@@@ ERROR TXP: ", file_name)
+    return "txp", "twt"
 
 
 # def save_excel(filename, sheetname, satellite_name, x, obo_prev, fgm_output_power_prev):
@@ -214,9 +224,6 @@ def resample_directory(input_directory, output_directory):
     output_file_path = os.path.join(output_directory, f + '.xlsx')
     resample_file(satellite_name, file_path, output_file_path)
     print(output_file_path)
-
-
-
 
 
 parser = argparse.ArgumentParser()
